@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat de Viagens</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        #chat { max-width: 600px; margin: auto; }
+        #messages { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll; }
+        #userInput { width: 100%; }
+    </style>
+</head>
+<body>
+    <div id="chat">
+        <h1>Chat de Viagens</h1>
+        <div id="messages"></div>
+        <input type="text" id="userInput" placeholder="Digite sua pergunta..." />
+        <button id="sendButton">Enviar</button>
+    </div>
+
+    <script>
+        const sendButton = document.getElementById('sendButton');
+        const userInput = document.getElementById('userInput');
+        const messagesDiv = document.getElementById('messages');
+
+        sendButton.addEventListener('click', async () => {
+            const userMessage = userInput.value;
+            messagesDiv.innerHTML += `<div><strong>Você:</strong> ${userMessage}</div>`;
+            userInput.value = '';
+
+            const response = await fetch('/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: userMessage })
+            });
+
+            const data = await response.json();
+            messagesDiv.innerHTML += `<div><strong>Bot:</strong> ${data.reply}</div>`;
+            messagesDiv.scrollTop = messagesDiv.scrollHeight; // Rolagem automática
+        });
+    </script>
+</body>
+</html> 
